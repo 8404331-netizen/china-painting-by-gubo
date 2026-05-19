@@ -2,8 +2,8 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>顾波国画 · 丹青阁 | 无限存储版</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>顾波国画 · 丹青阁 | 完整版</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -99,6 +99,100 @@
             border-radius: 24px;
             border: 1px dashed #e2cfbc;
         }
+        /* 同行艺术家样式 */
+        .artist-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        .artist-card {
+            background: #fffef8;
+            border-radius: 2rem;
+            padding: 1.5rem;
+            border: 1px solid #ecdcca;
+            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+        .artist-card:hover { background: #ffffff; border-color: #cfb797; }
+        .artist-avatar {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 0.8rem auto;
+            border-radius: 50%;
+            background: #e3cfbe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.8rem;
+            color: #956e51;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border: 3px solid #f5e5d8;
+            cursor: pointer;
+            position: relative;
+        }
+        .artist-avatar:hover::after {
+            content: "📷 换头像";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            font-size: 0.7rem;
+            text-align: center;
+            padding: 4px;
+            border-radius: 0 0 50% 50%;
+        }
+        .artist-name { font-size: 1.5rem; font-weight: 500; text-align: center; margin-bottom: 0.3rem; color: #6d4c3a; }
+        .artist-style {
+            text-align: center;
+            font-size: 0.85rem;
+            background: #f3ede7;
+            display: inline-block;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            margin: 0 auto 0.8rem auto;
+            width: fit-content;
+            color: #9e6c50;
+        }
+        .artist-bio { font-size: 0.9rem; color: #7a5f4c; margin: 0.5rem 0; line-height: 1.5; }
+        .work-sample {
+            background: #f5ede4;
+            border-radius: 1rem;
+            padding: 0.6rem;
+            margin: 0.5rem 0;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .work-sample-img { max-width: 100%; max-height: 80px; object-fit: contain; border-radius: 8px; cursor: pointer; border: 1px solid #e2cfbc; }
+        .upload-work-btn {
+            background: #e7cfbc;
+            border: none;
+            border-radius: 30px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            width: fit-content;
+            margin: 4px auto 0;
+        }
+        .upload-work-btn:hover { background: #d9b99b; }
+        .artist-links { margin-top: 0.8rem; display: flex; justify-content: center; gap: 1rem; }
+        .artist-links a {
+            text-decoration: none;
+            font-size: 0.75rem;
+            background: #f1e7df;
+            padding: 0.3rem 0.9rem;
+            border-radius: 30px;
+            color: #855e46;
+            border: 1px solid #e2cfbc;
+        }
         .modal {
             display: none;
             position: fixed;
@@ -155,6 +249,7 @@
         <button class="btn" id="openUploadBtn"> 🖌️ + 上传作品</button>
     </div>
 
+    <!-- 三个作品分区 -->
     <div class="section">
         <div class="section-header"><span class="section-title">⛰️ 山水篇</span><span class="section-count" id="landscapeCount">0件</span></div>
         <div id="landscapeGrid" class="art-grid"></div>
@@ -168,13 +263,22 @@
         <div id="fusionGrid" class="art-grid"></div>
     </div>
 
-    <div id="contact" style="background: #faf3ea; border-radius: 28px; padding: 1.5rem; text-align: center; margin: 2rem 0;">
-        <h3>📬 以画会友 · 墨缘相续</h3>
+    <!-- 同行雅集板块 -->
+    <section style="margin: 60px 0;">
+        <h2 style="border-left: 5px solid #d9ad8a; padding-left: 20px; font-size: 1.6rem; color: #553b2b; margin-bottom: 20px;">同行雅集 · 艺海同舟</h2>
+        <div class="artist-showcase" id="artistsGrid"></div>
+        <p style="text-align:center; font-size:0.8rem; margin-top:1rem; color:#b48c6f;">✨ 点击头像可更换头像，点击「上传代表作图片」可添加画作 ✨</p>
+    </section>
+
+    <!-- 联系方式 -->
+    <div style="background: #faf3ea; border-radius: 28px; padding: 1.5rem; text-align: center; margin: 2rem 0;">
+        <h3 style="color:#794f39;">📬 以画会友 · 墨缘相续</h3>
         <p style="margin-top: 8px;">邮箱：<strong>409796415@qq.com</strong></p>
     </div>
     <div class="footer"><p>© 2025 顾波国画艺术空间 | 丹青未老 笔墨长馨</p></div>
 </div>
 
+<!-- 上传弹窗 -->
 <div id="uploadModal" class="modal">
     <div class="modal-content">
         <h3>📤 上传作品</h3>
@@ -194,14 +298,25 @@
 </div>
 
 <script>
-    // 使用 IndexedDB 存储，无容量限制
+    // ==================== IndexedDB 存储（无限图片） ====================
     const DB_NAME = 'GuBoGallery';
-    const DB_VERSION = 1;
+    const DB_VERSION = 2;
     const STORE_NAME = 'works';
+    const ARTIST_STORE = 'artists';
     
     let db = null;
     
-    // 打开/创建数据库
+    // 默认艺术家数据
+    const DEFAULT_ARTISTS = [
+        { id: "lianxiang", name: "连香", style: "工笔写意·牡丹", bio: "笔下牡丹灵动含情，色彩明丽，富有传统笔墨功底与女性细腻温婉。", douyinUrl: "https://v.douyin.com/zYU01V7yM8k/", avatarIcon: "🌼", avatarBg: "#e9d7cb", avatarImage: null, workImages: [] },
+        { id: "yanbing", name: "砚冰", style: "水墨牡丹·清雅", bio: "擅以水墨写牡丹，用墨酣畅，格调清雅，追求'素以为绚'的意境。", douyinUrl: "https://v.douyin.com/zYU01V7yM8k/", avatarIcon: "🖌️", avatarBg: "#dfcfbf", avatarImage: null, workImages: [] },
+        { id: "weiwenhao", name: "卫文豪", style: "写意牡丹·教学", bio: "笔法奔放老辣，通过短视频分享牡丹画法，影响众多国画爱好者。", douyinUrl: "https://v.douyin.com/zYU01V7yM8k/", avatarIcon: "🎓", avatarBg: "#e2cfbb", avatarImage: null, workImages: [] },
+        { id: "yumoningxiang", name: "玉墨凝香", style: "写意重彩·牡丹", bio: "色彩层次丰富，画面雍容华贵，深受收藏界喜爱。", douyinUrl: "https://v.douyin.com/odaxycni-Ik/", avatarIcon: "✨", avatarBg: "#eedbcb", avatarImage: null, workImages: [] },
+        { id: "baiyun", name: "柏云", style: "小写意牡丹·典雅", bio: "笔触精致，构图空灵，富有文人气息，主张'从容笔墨遇见自己'。", douyinUrl: "https://v.douyin.com/YqUBBO9ACz8/", avatarIcon: "🍃", avatarBg: "#e4d4c2", avatarImage: null, workImages: [] },
+        { id: "tiantian", name: "天天国画-牡丹伴画团", style: "小写意牡丹 · 四尺条屏", bio: "擅长小写意牡丹，创作四尺条屏作品，通过直播与画友共同绘画，作品可供结缘。", douyinUrl: "https://v.douyin.com/uKax7xAyyDM/", avatarIcon: "🎋", avatarBg: "#dccdbd", avatarImage: null, workImages: [] }
+    ];
+    
+    // 打开数据库
     function openDB() {
         return new Promise((resolve, reject) => {
             const request = indexedDB.open(DB_NAME, DB_VERSION);
@@ -214,11 +329,19 @@
             
             request.onupgradeneeded = (event) => {
                 const db = event.target.result;
+                // 作品表
                 if (!db.objectStoreNames.contains(STORE_NAME)) {
-                    // 创建存储对象，使用 id 作为主键
                     const store = db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
                     store.createIndex('category', 'category', { unique: false });
                     store.createIndex('createdAt', 'createdAt', { unique: false });
+                }
+                // 艺术家表
+                if (!db.objectStoreNames.contains(ARTIST_STORE)) {
+                    const artistStore = db.createObjectStore(ARTIST_STORE, { keyPath: 'id' });
+                    // 插入默认艺术家数据
+                    DEFAULT_ARTISTS.forEach(artist => {
+                        artistStore.put(artist);
+                    });
                 }
             };
         });
@@ -248,14 +371,12 @@
             const request = store.getAll();
             request.onsuccess = () => {
                 const works = request.result;
-                // 按类别分组
                 const result = { landscape: [], peony: [], fusion: [] };
                 works.forEach(work => {
                     if (result[work.category]) {
                         result[work.category].push(work);
                     }
                 });
-                // 按创建时间倒序排列（最新在上）
                 for (let cat in result) {
                     result[cat].sort((a, b) => b.createdAt - a.createdAt);
                 }
@@ -276,26 +397,36 @@
         });
     }
     
-    // 获取作品数量
-    async function getCountByCategory() {
-        const works = await getAllWorks();
-        return {
-            landscape: works.landscape.length,
-            peony: works.peony.length,
-            fusion: works.fusion.length
-        };
+    // 获取所有艺术家
+    async function getAllArtists() {
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction([ARTIST_STORE], 'readonly');
+            const store = transaction.objectStore(ARTIST_STORE);
+            const request = store.getAll();
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error);
+        });
     }
     
-    // 渲染页面
-    async function renderAll() {
+    // 更新艺术家
+    async function updateArtist(artist) {
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction([ARTIST_STORE], 'readwrite');
+            const store = transaction.objectStore(ARTIST_STORE);
+            const request = store.put(artist);
+            request.onsuccess = () => resolve();
+            request.onerror = () => reject(request.error);
+        });
+    }
+    
+    // ==================== 渲染函数 ====================
+    async function renderAllWorks() {
         const works = await getAllWorks();
         
-        // 更新计数
         document.getElementById('landscapeCount').innerText = works.landscape.length + '件';
         document.getElementById('peonyCount').innerText = works.peony.length + '件';
         document.getElementById('fusionCount').innerText = works.fusion.length + '件';
         
-        // 渲染各个分区
         renderGrid('landscapeGrid', works.landscape);
         renderGrid('peonyGrid', works.peony);
         renderGrid('fusionGrid', works.fusion);
@@ -320,17 +451,80 @@
             </div>
         `).join('');
         
-        // 绑定删除事件
         grid.querySelectorAll('.delete-btn').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
                 const id = parseInt(btn.getAttribute('data-id'));
                 if (confirm('确定删除这幅作品吗？')) {
                     await deleteWork(id);
-                    await renderAll();
+                    await renderAllWorks();
                 }
             });
         });
+    }
+    
+    async function renderArtists() {
+        const artists = await getAllArtists();
+        const container = document.getElementById('artistsGrid');
+        if (!container) return;
+        
+        container.innerHTML = artists.map(artist => {
+            const avatarStyle = artist.avatarImage ? `background-image: url(${artist.avatarImage}); background-size: cover; background-position: center;` : `background: ${artist.avatarBg}; display: flex; align-items: center; justify-content: center; font-size: 2.8rem;`;
+            const avatarContent = artist.avatarImage ? '' : artist.avatarIcon;
+            let worksHtml = `<div class="work-sample"><div>🎨 代表作展示</div>`;
+            if (artist.workImages && artist.workImages.length > 0) {
+                artist.workImages.forEach(img => { worksHtml += `<img src="${img}" class="work-sample-img" onclick="alert('${artist.name} 的作品图')" />`; });
+            } else { worksHtml += `<div style="color:#b48c6f; font-size:0.7rem;">暂无上传作品图</div>`; }
+            worksHtml += `<button class="upload-work-btn" data-id="${artist.id}">📤 上传代表作图片</button></div>`;
+            return `
+                <div class="artist-card">
+                    <div class="artist-avatar upload-avatar-btn" data-id="${artist.id}" style="${avatarStyle}">${avatarContent}</div>
+                    <div class="artist-name">${artist.name}</div>
+                    <div class="artist-style">${artist.style}</div>
+                    <div class="artist-bio">${artist.bio}</div>
+                    ${worksHtml}
+                    <div class="artist-links"><a href="${artist.douyinUrl}" target="_blank">📱 抖音主页</a><a href="#" onclick="alert('与${artist.name}交流国画艺术'); return false;">✉️ 交流</a></div>
+                    <div style="margin-top:8px; font-size:0.65rem; text-align:center; color:#a67c5e;">🤝 与顾波老师艺道相携</div>
+                </div>
+            `;
+        }).join('');
+        
+        // 头像上传
+        document.querySelectorAll('.upload-avatar-btn').forEach(btn => {
+            btn.addEventListener('click', () => uploadArtistImage(btn.getAttribute('data-id'), 'avatar'));
+        });
+        // 代表作上传
+        document.querySelectorAll('.upload-work-btn').forEach(btn => {
+            btn.addEventListener('click', () => uploadArtistImage(btn.getAttribute('data-id'), 'work'));
+        });
+    }
+    
+    async function uploadArtistImage(artistId, type) {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async (ev) => {
+                const imageData = ev.target.result;
+                const artists = await getAllArtists();
+                const idx = artists.findIndex(a => a.id === artistId);
+                if (idx !== -1) {
+                    if (type === 'avatar') {
+                        artists[idx].avatarImage = imageData;
+                    } else {
+                        artists[idx].workImages.push(imageData);
+                    }
+                    await updateArtist(artists[idx]);
+                    await renderArtists();
+                    alert('更新成功');
+                }
+            };
+            reader.readAsDataURL(file);
+        };
+        input.click();
     }
     
     function escapeHtml(str) {
@@ -338,7 +532,7 @@
         return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
     }
     
-    // 上传弹窗逻辑
+    // ==================== 上传弹窗 ====================
     const modal = document.getElementById('uploadModal');
     document.getElementById('openUploadBtn').onclick = () => modal.style.display = 'flex';
     document.getElementById('cancelModalBtn').onclick = () => modal.style.display = 'none';
@@ -354,10 +548,6 @@
         if (!file.type.startsWith('image/')) {
             alert('请上传图片文件');
             return;
-        }
-        // 检查文件大小（建议不超过 5MB，但 IndexedDB 可以更大）
-        if (file.size > 10 * 1024 * 1024) {
-            alert('图片较大（超过10MB），建议压缩后再上传');
         }
         const reader = new FileReader();
         reader.onload = (ev) => {
@@ -377,14 +567,13 @@
         try {
             await saveWork({ category, title, imageData: currentImageData });
             
-            // 重置表单
             modal.style.display = 'none';
             document.getElementById('uploadTitle').value = '';
             fileInput.value = '';
             previewArea.innerHTML = '';
             currentImageData = null;
             
-            await renderAll();
+            await renderAllWorks();
             alert('✅ 上传成功！');
         } catch (error) {
             console.error('保存失败:', error);
@@ -392,13 +581,12 @@
         }
     };
     
-    // 初始化
+    // ==================== 初始化 ====================
     async function init() {
         await openDB();
-        await renderAll();
-        // 显示存储状态
-        const statusBar = document.getElementById('statusBar');
-        statusBar.innerHTML = '💾 无限存储版 · 可上传任意多张图片';
+        await renderAllWorks();
+        await renderArtists();
+        document.getElementById('statusBar').innerHTML = '💾 无限存储版 · 可上传任意多张图片';
     }
     
     init();
