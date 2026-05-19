@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>顾波国画 · 丹青阁 | 线上画廊</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #fefaf5;
+            font-family: system-ui, 'Segoe UI', 'Noto Serif SC', sans-serif;
+            color: #2e241f;
+            line-height: 1.5;
+            padding: 24px;
+        }
+        .container { max-width: 1280px; margin: 0 auto; }
+        .hero {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #f5ede4, #fef7ef);
+            border-radius: 48px;
+            margin-bottom: 30px;
+        }
+        .hero h1 { font-size: 2.8rem; color: #5c3b28; letter-spacing: 4px; }
+        .hero p { color: #9b7c66; margin-top: 10px; }
+        .toolbar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 16px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            background: #e7cfbc;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #4d2f1f;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn:hover { background: #d9b99b; transform: translateY(-2px); }
+        .btn-primary { background: #c9a77d; color: white; }
+        .btn-primary:hover { background: #b88b5e; }
+        .section { margin: 48px 0; }
+        .section-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            border-left: 5px solid #d9ad8a;
+            padding-left: 20px;
+        }
+        .section-title { font-size: 1.8rem; font-weight: 500; color: #553b2b; }
+        .section-count {
+            background: #eedbcb;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            color: #7a5a45;
+        }
+        .art-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
+        }
+        .art-card {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: 0.2s;
+            border: 1px solid #f0e4d8;
+        }
+        .art-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.12); }
+        .art-img {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            background: #e9dfd3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            background-size: cover;
+            background-position: center;
+        }
+        .art-info { padding: 14px; }
+        .art-title { font-weight: 700; font-size: 1.1rem; color: #533e2e; margin-bottom: 4px; }
+        .art-category { font-size: 0.75rem; color: #b28b6f; margin-bottom: 8px; }
+        .art-meta { margin-top: 8px; display: flex; justify-content: flex-end; }
+        .delete-btn {
+            background: #f7ede5;
+            border: none;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            color: #a05f42;
+        }
+        .delete-btn:hover { background: #eedbcb; }
+        .empty-tip {
+            color: #bc9a7c;
+            text-align: center;
+            padding: 40px;
+            background: #fffbf5;
+            border-radius: 24px;
+            border: 1px dashed #e2cfbc;
+        }
+        .artist-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        .artist-card {
+            background: #fffef8;
+            border-radius: 2rem;
+            padding: 1.5rem;
+            border: 1px solid #ecdcca;
+            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+        .artist-card:hover { background: #ffffff; border-color: #cfb797; }
+        .artist-avatar {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 0.8rem auto;
+            border-radius: 50%;
+            background: #e3cfbe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.8rem;
+            color: #956e51;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border: 3px solid #f5e5d8;
+            cursor: pointer;
+            position: relative;
+        }
+        .artist-avatar:hover::after {
+            content: "📷 换头像";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            font-size: 0.7rem;
+            text-align: center;
+            padding: 4px;
+            border-radius: 0 0 50% 50%;
+        }
+        .artist-name { font-size: 1.5rem; font-weight: 500; text-align: center; margin-bottom: 0.3rem; color: #6d4c3a; }
+        .artist-style {
+            text-align: center;
+            font-size: 0.85rem;
+            background: #f3ede7;
+            display: inline-block;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            margin: 0 auto 0.8rem auto;
+            width: fit-content;
+            color: #9e6c50;
+        }
+        .artist-bio { font-size: 0.9rem; color: #7a5f4c; margin: 0.5rem 0; line-height: 1.5; }
+        .work-sample {
+            background: #f5ede4;
+            border-radius: 1rem;
+            padding: 0.6rem;
+            margin: 0.5rem 0;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .work-sample-img { max-width: 100%; max-height: 100px; object-fit: contain; border-radius: 12px; cursor: pointer; border: 1px solid #e2cfbc; }
+        .upload-work-btn {
+            background: #e7cfbc;
+            border: none;
+            border-radius: 30px;
+            padding: 5px 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #5c3b28;
+            cursor: pointer;
+            width: fit-content;
+            margin: 4px auto 0;
+        }
+        .upload-work-btn:hover { background: #d9b99b; }
+        .artist-links { margin-top: 0.8rem; display: flex; justify-content: center; gap: 1rem; }
+        .artist-links a {
+            text-decoration: none;
+            font-size: 0.75rem;
+            background: #f1e7df;
+            padding: 0.3rem 0.9rem;
+            border-radius: 30px;
+            color: #855e46;
+            border: 1px solid #e2cfbc;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 32px;
+            padding: 28px;
+            width: 90%;
+            max-width: 400px;
+        }
+        .modal-content h3 { color: #5c3b28; margin-bottom: 20px; }
+        .modal-content input, .modal-content select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 16px;
+            border: 1px solid #e2cfbc;
+            border-radius: 24px;
+            font-family: inherit;
+        }
+        .modal-buttons { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
+        .preview-area { margin-top: 12px; text-align: center; }
+        .preview-img { max-width: 100%; max-height: 120px; border-radius: 12px; }
+        .footer { text-align: center; margin-top: 60px; padding: 24px; border-top: 1px solid #e4cfbc; color: #a18169; font-size: 0.8rem; }
+        .status-bar {
+            background: #e8f0e8;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            color: #5a7a5a;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        @media (max-width: 640px) { .hero h1 { font-size: 1.8rem; } .section-title { font-size: 1.4rem; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="hero">
+        <h1>🎨 顾波 · 丹青阁</h1>
+        <p>山水寄情 · 牡丹写意 · 笔墨承心韵</p>
+    </div>
+    <div class="toolbar">
+        <div class="status-bar" id="statusBar">🟢 在线 · 数据云端永久保存</div>
+        <div>
+            <button class="btn" id="openUploadBtn"> 🖌️ + 上传作品到分区</button>
+            <button class="btn btn-primary" id="changeBgBtn"> 🎨 更换底图</button>
+        </div>
+        <input type="file" id="bgFileInput" accept="image/*" style="display:none">
+    </div>
+
+    <div id="landscapeSection" class="section">
+        <div class="section-header"><span class="section-title">⛰️ 山水篇</span><span class="section-count" id="landscapeCount">0件</span></div>
+        <div id="landscapeGrid" class="art-grid"></div>
+    </div>
+    <div id="peonySection" class="section">
+        <div class="section-header"><span class="section-title">🌺 牡丹篇</span><span class="section-count" id="peonyCount">0件</span></div>
+        <div id="peonyGrid" class="art-grid"></div>
+    </div>
+    <div id="fusionSection" class="section">
+        <div class="section-header"><span class="section-title">✨ 融合·创新篇</span><span class="section-count" id="fusionCount">0件</span></div>
+        <div id="fusionGrid" class="art-grid"></div>
+    </div>
+
+    <section id="fellows" style="margin: 60px 0;">
+        <h2 class="section-title" style="border-left: 5px solid #d9ad8a; padding-left: 20px;">同行雅集 · 艺海同舟</h2>
+        <div class="artist-showcase" id="artistsGrid"></div>
+        <p style="text-align:center; font-size:0.8rem; margin-top:1rem; color:#b48c6f;">✨ 点击头像可更换头像，点击「上传代表作图片」可添加画作 ✨</p>
+    </section>
+
+    <div id="contact" style="background: #faf3ea; border-radius: 28px; padding: 2rem 1.5rem; text-align: center; margin: 3rem 0;">
+        <h3 style="font-size: 1.5rem; color:#794f39;">📬 以画会友 · 墨缘相续</h3>
+        <p style="margin: 1rem 0;">邮箱联系：<strong>409796415@qq.com</strong></p>
+    </div>
+    <div class="footer"><p>© 2025 顾波国画艺术空间 | 丹青未老 笔墨长馨</p></div>
+</div>
+
+<div id="uploadModal" class="modal">
+    <div class="modal-content">
+        <h3>📤 上传作品到分区</h3>
+        <label>选择分区 *</label>
+        <select id="uploadCategory">
+            <option value="landscape">⛰️ 山水篇</option>
+            <option value="peony">🌺 牡丹篇</option>
+            <option value="fusion">✨ 融合·创新篇</option>
+        </select>
+        <label>作品名称 *</label>
+        <input type="text" id="uploadTitle" placeholder="例：《云壑松风》">
+        <label>上传图片 *</label>
+        <input type="file" id="uploadImageFile" accept="image/jpeg,image/png,image/webp">
+        <div class="preview-area" id="previewArea"></div>
+        <div class="modal-buttons">
+            <button class="btn" id="cancelModalBtn">取消</button>
+            <button class="btn btn-primary" id="confirmUploadBtn">确认上传</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 配置后端API地址（根据部署环境自动适配）
+    const API_BASE = window.location.origin + '/api';
+    
+    async function request(url, options = {}) {
+        const res = await fetch(url, options);
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+    }
+    
+    async function loadWorks() {
+        try {
+            const data = await request(`${API_BASE}/get-works`);
+            renderWorks(data);
+        } catch(e) { 
+            console.error(e); 
+            // 如果后端API不可用，使用本地存储模式
+            loadWorksLocal();
+        }
+    }
+    
+    // 本地存储模式（降级方案）
+    function loadWorksLocal() {
+        const saved = localStorage.getItem('gubo_works');
+        if (saved) {
+            try {
+                const data = JSON.parse(saved);
+                renderWorks(data);
+            } catch(e) {}
+        } else {
+            renderWorks({ landscape: [], peony: [], fusion: [] });
+        }
+    }
+    
+    function saveWorksLocal(works) {
+        localStorage.setItem('gubo_works', JSON.stringify(works));
+    }
+    
+    async function loadArtists() {
+        try {
+            const data = await request(`${API_BASE}/get-artists`);
+            renderArtists(data);
+        } catch(e) { 
+            console.error(e);
+            loadArtistsLocal();
+        }
+    }
+    
+    function loadArtistsLocal() {
+        const defaultArtists = [
+            { id: "lianxiang", name: "连香", style: "工笔写意·牡丹", bio: "笔下牡丹灵动含情，色彩明丽，富有传统笔墨功底与女性细腻温婉。", douyin_url: "https://v.douyin.com/zYU01V7yM8k/", avatar_icon: "🌼", avatar_bg: "#e9d7cb", avatar_image: null, work_images: [] },
+            { id: "yanbing", name: "砚冰", style: "水墨牡丹·清雅", bio: "擅以水墨写牡丹，用墨酣畅，格调清雅，追求'素以为绚'的意境。", douyin_url: "https://v.douyin.com/zYU01V7yM8k/", avatar_icon: "🖌️", avatar_bg: "#dfcfbf", avatar_image: null, work_images: [] },
+            { id: "weiwenhao", name: "卫文豪", style: "写意牡丹·教学", bio: "笔法奔放老辣，通过短视频分享牡丹画法，影响众多国画爱好者。", douyin_url: "https://v.douyin.com/zYU01V7yM8k/", avatar_icon: "🎓", avatar_bg: "#e2cfbb", avatar_image: null, work_images: [] },
+            { id: "yumoningxiang", name: "玉墨凝香", style: "写意重彩·牡丹", bio: "色彩层次丰富，画面雍容华贵，深受收藏界喜爱。", douyin_url: "https://v.douyin.com/odaxycni-Ik/", avatar_icon: "✨", avatar_bg: "#eedbcb", avatar_image: null, work_images: [] },
+            { id: "baiyun", name: "柏云", style: "小写意牡丹·典雅", bio: "笔触精致，构图空灵，富有文人气息，主张'从容笔墨遇见自己'。", douyin_url: "https://v.douyin.com/YqUBBO9ACz8/", avatar_icon: "🍃", avatar_bg: "#e4d4c2", avatar_image: null, work_images: [] },
+            { id: "tiantian", name: "天天国画-牡丹伴画团", style: "小写意牡丹 · 四尺条屏", bio: "擅长小写意牡丹，创作四尺条屏作品，通过直播与画友共同绘画，作品可供结缘。", douyin_url: "https://v.douyin.com/uKax7xAyyDM/", avatar_icon: "🎋", avatar_bg: "#dccdbd", avatar_image: null, work_images: [] }
+        ];
+        const saved = localStorage.getItem('gubo_artists');
+        if (saved) {
+            try {
+                const artists = JSON.parse(saved);
+                renderArtists(artists);
+                return;
+            } catch(e) {}
+        }
+        renderArtists(defaultArtists);
+    }
+    
+    function saveArtistsLocal(artists) {
+        localStorage.setItem('gubo_artists', JSON.stringify(artists));
+    }
+    
+    function renderWorks(works) {
+        const categories = ['landscape', 'peony', 'fusion'];
+        const categoryNames = { landscape: '山水', peony: '牡丹', fusion: '融合' };
+        categories.forEach(cat => {
+            const items = works[cat] || [];
+            const grid = document.getElementById(cat + 'Grid');
+            const countSpan = document.getElementById(cat + 'Count');
+            if (countSpan) countSpan.innerText = items.length + '件';
+            if (!grid) return;
+            if (items.length === 0) {
+                grid.innerHTML = `<div class="empty-tip">✨ 暂无作品，点击上方「上传作品到分区」添加</div>`;
+                return;
+            }
+            grid.innerHTML = items.map(art => `
+                <div class="art-card" data-id="${art.id}" data-category="${cat}">
+                    <div class="art-img" style="background-image: url(${art.image_data}); background-size: cover; background-position: center;"></div>
+                    <div class="art-info">
+                        <div class="art-title">${escapeHtml(art.title)}</div>
+                        <div class="art-category">${categoryNames[cat]}</div>
+                        <div class="art-meta"><button class="delete-art-btn" data-id="${art.id}" data-category="${cat}">删除</button></div>
+                    </div>
+                </div>
+            `).join('');
+        });
+        document.querySelectorAll('.delete-art-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const id = btn.getAttribute('data-id');
+                const category = btn.getAttribute('data-category');
+                if (confirm('确定删除这幅作品吗？')) {
+                    try {
+                        await request(`${API_BASE}/delete-work`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, category }) });
+                        loadWorks();
+                    } catch(e) {
+                        // 降级到本地存储
+                        const saved = localStorage.getItem('gubo_works');
+                        if (saved) {
+                            const works = JSON.parse(saved);
+                            works[category] = works[category].filter(w => w.id != id);
+                            saveWorksLocal(works);
+                            loadWorksLocal();
+                        }
+                    }
+                }
+            });
+        });
+    }
+    
+    function renderArtists(artists) {
+        const container = document.getElementById('artistsGrid');
+        if (!container) return;
+        container.innerHTML = artists.map(artist => {
+            const avatarStyle = artist.avatar_image ? `background-image: url(${artist.avatar_image}); background-size: cover; background-position: center;` : `background: ${artist.avatar_bg}; display: flex; align-items: center; justify-content: center; font-size: 2.8rem;`;
+            const avatarContent = artist.avatar_image ? '' : artist.avatar_icon;
+            let worksHtml = `<div class="work-sample"><div>🎨 代表作展示</div>`;
+            if (artist.work_images && artist.work_images.length > 0) {
+                artist.work_images.forEach(img => { worksHtml += `<img src="${img}" class="work-sample-img" onclick="alert('${artist.name} 的作品图')" />`; });
+            } else { worksHtml += `<div style="color:#b48c6f; font-size:0.7rem;">暂无上传作品图</div>`; }
+            worksHtml += `<button class="upload-work-btn" data-id="${artist.id}">📤 上传代表作图片</button></div>`;
+            return `<div class="artist-card"><div class="artist-avatar upload-avatar-btn" data-id="${artist.id}" style="${avatarStyle}">${avatarContent}</div><div class="artist-name">${artist.name}</div><div class="artist-style">${artist.style}</div><div class="artist-bio">${artist.bio}</div>${worksHtml}<div class="artist-links"><a href="${artist.douyin_url}" target="_blank">📱 抖音主页</a><a href="#" onclick="alert('与${artist.name}交流国画艺术'); return false;">✉️ 交流</a></div><div style="margin-top:8px; font-size:0.65rem; text-align:center;">🤝 与顾波老师艺道相携</div></div>`;
+        }).join('');
+        
+        document.querySelectorAll('.upload-avatar-btn').forEach(btn => {
+            btn.addEventListener('click', () => uploadArtistImage(btn.getAttribute('data-id'), 'avatar'));
+        });
+        document.querySelectorAll('.upload-work-btn').forEach(btn => {
+            btn.addEventListener('click', () => uploadArtistImage(btn.getAttribute('data-id'), 'work'));
+        });
+    }
+    
+    async function uploadArtistImage(artistId, type) {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async (ev) => {
+                const imageData = ev.target.result;
+                try {
+                    await request(`${API_BASE}/update-artist`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ artistId, type, imageData }) });
+                    loadArtists();
+                    alert('更新成功');
+                } catch(e) {
+                    // 降级到本地存储
+                    const saved = localStorage.getItem('gubo_artists');
+                    if (saved) {
+                        let artists = JSON.parse(saved);
+                        const idx = artists.findIndex(a => a.id === artistId);
+                        if (idx !== -1) {
+                            if (type === 'avatar') artists[idx].avatar_image = imageData;
+                            else artists[idx].work_images.push(imageData);
+                            saveArtistsLocal(artists);
+                            loadArtistsLocal();
+                            alert('更新成功（本地保存）');
+                        }
+                    }
+                }
+            };
+            reader.readAsDataURL(file);
+        };
+        input.click();
+    }
+    
+    function escapeHtml(str) { return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])); }
+    
+    // 上传作品
+    const modal = document.getElementById('uploadModal');
+    document.getElementById('openUploadBtn').onclick = () => { modal.style.display = 'flex'; };
+    document.getElementById('cancelModalBtn').onclick = () => { modal.style.display = 'none'; };
+    modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+    
+    let currentImageData = null;
+    document.getElementById('uploadImageFile').onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            currentImageData = ev.target.result;
+            document.getElementById('previewArea').innerHTML = `<img src="${currentImageData}" class="preview-img">`;
+        };
+        reader.readAsDataURL(file);
+    };
+    
+    document.getElementById('confirmUploadBtn').onclick = async () => {
+        const category = document.getElementById('uploadCategory').value;
+        const title = document.getElementById('uploadTitle').value.trim();
+        if (!title) { alert('请输入作品名称'); return; }
+        if (!currentImageData) { alert('请上传作品图片'); return; }
+        try {
+            await request(`${API_BASE}/upload`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ category, title, imageData: currentImageData }) });
+            modal.style.display = 'none';
+            document.getElementById('uploadTitle').value = '';
+            document.getElementById('uploadImageFile').value = '';
+            document.getElementById('previewArea').innerHTML = '';
+            currentImageData = null;
+            loadWorks();
+            alert('✅ 上传成功');
+        } catch(e) {
+            // 降级到本地存储
+            const saved = localStorage.getItem('gubo_works');
+            let works = saved ? JSON.parse(saved) : { landscape: [], peony: [], fusion: [] };
+            const newId = Date.now();
+            works[category].push({ id: newId, title, image_data: currentImageData });
+            saveWorksLocal(works);
+            modal.style.display = 'none';
+            document.getElementById('uploadTitle').value = '';
+            document.getElementById('uploadImageFile').value = '';
+            document.getElementById('previewArea').innerHTML = '';
+            currentImageData = null;
+            loadWorksLocal();
+            alert('✅ 上传成功（本地保存）');
+        }
+    };
+    
+    // 底图更换
+    const bgInput = document.getElementById('bgFileInput');
+    document.getElementById('changeBgBtn').onclick = () => bgInput.click();
+    bgInput.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                localStorage.setItem('gubo_bg', ev.target.result);
+                document.body.style.backgroundImage = `url(${ev.target.result})`;
+                document.body.style.backgroundSize = 'cover';
+                document.body.style.backgroundAttachment = 'fixed';
+                document.body.style.backgroundColor = '#fefaf5';
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    const savedBg = localStorage.getItem('gubo_bg');
+    if (savedBg) { document.body.style.backgroundImage = `url(${savedBg})`; document.body.style.backgroundSize = 'cover'; }
+    
+    // 启动
+    loadWorks();
+    loadArtists();
+</script>
+</body>
+</html>
